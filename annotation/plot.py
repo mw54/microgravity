@@ -5,6 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import constants
 
+organ_map = {
+    "402": "Femur",
+    "403": "Humerus",
+    "404": "Blood",
+    "405": "Spleen"
+}
+
 def plot_stackedbar(title, data, path):
     counts = dict()
     for item in data["clustertype"].unique():
@@ -31,17 +38,23 @@ def plot_stackedbar(title, data, path):
     plt.close()
 
 def plot_dotplot(title, data, markers, path):
-    data.loc[data["logfc"] < 0, "logfc"] = np.nan
     nrows = 2
     ncols = int(len(markers) / nrows + 1 / nrows)
     fig, axes = plt.subplots(
         ncols=ncols,
         nrows=nrows,
         sharey=True,  # All subplots share the Y-axis scale
-        figsize=(1.2 * ncols + 2, 4 * nrows + 1),
+        figsize=(13, 9),
         dpi=300
     )
-    fig.subplots_adjust(wspace=0.0)
+    fig.subplots_adjust(wspace=0.1)
+    fig.subplots_adjust(hspace=0.3)
+
+    data = data.copy()
+    data.loc[data["logfoldchanges"] < 0, "logfoldchanges"] = np.nan
+    data['logfoldchanges'] = data['logfoldchanges'].clip(-5, 5)
+    data['nlog10padj'] = data['nlog10padj'].clip(0, 300)
+
     for i, clustertype in enumerate(markers):
         subset = data[data['gene'].isin(markers[clustertype])]
         ax = axes[int(i / ncols), int(i % ncols)]
@@ -49,14 +62,14 @@ def plot_dotplot(title, data, markers, path):
             data=subset,
             x='gene',
             y='clustertype',
-            hue='logfc',
+            hue='logfoldchanges',
             palette='Reds',
             hue_norm=(-5, 5),
             size_norm=(0, 300),
             size='nlog10padj',
             sizes=(0, 100),
             ax=ax,
-            legend=False if i < len(markers) - 1 else True
+            legend=False if i + 1 != ncols else True
         )
         ax.set_title(clustertype, size=8)
         ax.set_xlim(-0.5, len(markers[clustertype]) - 0.5)
@@ -65,12 +78,22 @@ def plot_dotplot(title, data, markers, path):
         ax.tick_params(axis='x', rotation=90)
         if i % ncols != 0:
             ax.tick_params(axis='y', left=False)
-        if i == len(markers) - 1:
+        if i + 1 == ncols:
             sns.move_legend(ax, "center left", bbox_to_anchor=(1.02, 0.5))
+            legend = ax.get_legend()
+            for text in legend.texts:
+                if text.get_text() == "logfoldchanges":
+                    text.set_text(r"$\log_2$(FE) this/other")
+                if text.get_text() == "nlog10padj":
+                    text.set_text(r"$-\log_{10}$(p-adj)")
+
+    # remove unused panels
+    for i in range(len(markers), nrows * ncols):
+        ax = axes[int(i / ncols), int(i % ncols)]
+        ax.remove()
 
     fig.suptitle(title)
     plt.tight_layout()
-    fig.subplots_adjust(wspace=0.1)
     plt.savefig(path)
     plt.close()
 
@@ -93,10 +116,10 @@ def plot(name, source_path):
     # create annotation markers dotplot CSV
     dotplot = sc.get.rank_genes_groups_df(adata, None, key="celltype_markers")
     dotplot = dotplot[["group", "names", "logfoldchanges", "pvals_adj"]]
-    dotplot.columns = ["clustertype", "gene", "logfc", "padj"]
+    dotplot.rename(columns={"group": "clustertype", "names": "gene"}, inplace=True)
     dotplot = dotplot.loc[dotplot["gene"].isin(markers),]
-    min_padj = dotplot.loc[dotplot["padj"] > 0, "padj"].min()
-    dotplot["nlog10padj"] = dotplot["padj"].apply(lambda x: -np.log10(x) if x > 0 else -np.log10(min_padj))
+    min_padj = dotplot.loc[dotplot["pvals_adj"] > 0, "pvals_adj"].min()
+    dotplot["nlog10padj"] = dotplot["pvals_adj"].apply(lambda x: -np.log10(x) if x > 0 else -np.log10(min_padj))
     dotplot["mean_expr"] = dotplot.apply(lambda row: mean_expr.loc[row["clustertype"], row["gene"]], axis=1)
     dotplot["pct_expr"] = dotplot.apply(lambda row: pct_expr.loc[row["clustertype"], row["gene"]], axis=1)
     dotplot["marker"] = dotplot.apply(lambda row: row["gene"] in constants.markers[name][row["clustertype"]] if row["clustertype"] in constants.markers[name] else False, axis=1)
@@ -111,13 +134,15 @@ def plot(name, source_path):
     umap.to_csv(f"data/umap_{name}.csv", index=False)
 
     # celltype UMAP preview
-    sc.pl.umap(adata, color="clustertype", size=2, save=f"_clustertype_{name}.png")
+    sc.pl.umap(adata, color="clustertype", size=2, title=organ_map[name], show=False)
+    plt.savefig(f"figures/umap_celltype_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
 
     # marker dotplot preview
-    plot_dotplot(f"{name} Markers", dotplot, constants.markers[name], f"figures/dotplot_significance_{name}.png")
+    plot_dotplot(organ_map[name], dotplot, constants.markers[name], f"figures/dotplot_significance_{name}.png")
 
     # cell type proportion preview
-    plot_stackedbar(name, umap, f"figures/stackedbar_celltype_proportion_{name}.png")
+    plot_stackedbar(organ_map[name], umap, f"figures/stackedbar_celltype_proportion_{name}.png")
     
 
 plot("402", "../data/402-1.h5ad")

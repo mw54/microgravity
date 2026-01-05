@@ -1,6 +1,7 @@
 import scanpy as sc
 import anndata as ad
 import pandas as pd
+import matplotlib.pyplot as plt
 import constants
 
 sc.settings.n_jobs = 16
@@ -55,32 +56,48 @@ def process(name, target_path):
 
     # feature selection
     sc.pp.highly_variable_genes(adata, batch_key="sample")
-    sc.pl.highly_variable_genes(adata, save=f"_{name}.png")
+    sc.pl.highly_variable_genes(adata, show=False)
+    plt.savefig(f"figures/hvg_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
 
     # dimension reduction
     sc.pp.scale(adata)
     sc.tl.pca(adata, n_comps=64)
-    sc.pl.pca_variance_ratio(adata, n_pcs=64, log=True, save=f"_{name}.png")
+    sc.pl.pca_variance_ratio(adata, n_pcs=64, log=True, show=False)
+    plt.savefig(f"figures/variance_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
     sc.pl.pca(
         adata,
         color=["sample", "sample", "pct_counts_mt", "pct_counts_mt"],
         dimensions=[(0, 1), (2, 3), (0, 1), (2, 3)],
         ncols=2,
         size=2,
-        save=f"_{name}.png"
+        show=False
     )
+    plt.savefig(f"figures/pca_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
 
     # batch effect check
     sc.pp.neighbors(adata)
     sc.tl.umap(adata)
-    sc.pl.umap(adata, color="sample", size=2, save=f"_samples_{name}.png")
-    sc.pl.umap(adata, color="group", size=2, save=f"_groups_{name}.png")
-    sc.pl.umap(adata, color="gravity", size=2, save=f"_gravity_{name}.png")
-    sc.pl.umap(adata, color="age", size=2, save=f"_age_{name}.png")
+    sc.pl.umap(adata, color="sample", size=2, show=False)
+    plt.savefig(f"figures/umap_sample_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
+    sc.pl.umap(adata, color="group", size=2, show=False)
+    plt.savefig(f"figures/umap_group_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
+    sc.pl.umap(adata, color="gravity", size=2, show=False)
+    plt.savefig(f"figures/umap_gravity_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
+    sc.pl.umap(adata, color="age", size=2, show=False)
+    plt.savefig(f"figures/umap_age_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
 
     # clustering
     sc.tl.leiden(adata, resolution=1.0, flavor="igraph", random_state=42)
-    sc.pl.umap(adata, color=["leiden"], legend_loc='on data', save=f"_cluster_{name}.png")
+    sc.pl.umap(adata, color=["leiden"], legend_loc='on data', show=False)
+    plt.savefig(f"figures/umap_leiden_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
 
     # reassessment
     sc.pl.umap(
@@ -109,12 +126,15 @@ def process(name, target_path):
         hspace=0.2,
         size=3,
         ncols=3,
-        save=f"_reassessment_{name}.png"
+        show=False
     )
+    plt.savefig(f"figures/reassessments_{name}.png", dpi=300, bbox_inches='tight')
+    plt.close()
 
     # differentially expressed genes
     sc.tl.rank_genes_groups(adata, groupby="leiden", method="wilcoxon", layer="lognorm", use_raw=False)
-    sc.pl.rank_genes_groups_dotplot(adata, groupby="leiden", standard_scale="var", n_genes=10, save=f"top10_{name}.png")
+    sc.pl.rank_genes_groups_dotplot(adata, groupby="leiden", standard_scale="var", n_genes=10, show=False)
+    plt.savefig(f"figures/top10_{name}.png", dpi=300, bbox_inches='tight')
 
     # save data
     adata.write(target_path)

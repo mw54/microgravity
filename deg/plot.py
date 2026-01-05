@@ -4,8 +4,6 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib.colors as mcolors
-from matplotlib_venn import venn2
 from adjustText import adjust_text
 
 organ_map = {
@@ -58,9 +56,15 @@ def plot_dotplot(title, data, path):
         legend=True
     )
     sns.move_legend(ax, "center left", bbox_to_anchor=(1.02, 0.5))
+
+    # customize legend labels
     legend = ax.get_legend()
-    legend.texts[0].set_text(r"$\log_2$(FC) uG/1G")
-    legend.texts[6].set_text(r"$-\log_{10}$(p-adj)")
+    for text in legend.texts:
+        if text.get_text() == "logfoldchanges":
+            text.set_text(r"$\log_2$(FC) uG/1G")
+        if text.get_text() == "nlog10padj":
+            text.set_text(r"$-\log_{10}$(p-adj)")
+    
     plt.title(title)
     plt.xticks(rotation=90, ha="center")
     plt.xlabel('Cell Type')

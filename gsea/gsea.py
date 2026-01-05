@@ -2,7 +2,6 @@ import pandas as pd
 import scanpy as sc
 import gseapy as gp
 from tqdm import tqdm
-import json
 
 gene_sets = ["data/m2.cp.v2025.1.Mm.symbols.gmt"]
 

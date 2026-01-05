@@ -1,7 +1,6 @@
 import scanpy as sc
 import anndata as ad
 import pandas as pd
-from tqdm import tqdm
 import constants
 
 def process(name, target_path):

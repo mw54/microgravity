@@ -38,8 +38,9 @@ def plot(args):
         ],
         jitter=0.4,
         multi_panel=True,
-        save=f"_{name}_{sample}.png"
+        show=False
     )
+    plt.savefig(f"figures/violin_{name}_{sample}.png", dpi=300, bbox_inches='tight')
     plt.close()
     return sample, adata
 
@@ -74,8 +75,9 @@ def process(name):
         ],
         stripplot=False,
         multi_panel=True,
-        save=f"_{name}_overall.png"
+        show=False
     )
+    plt.savefig(f"figures/violin_{name}_overall.png", dpi=300, bbox_inches='tight')
     plt.close()
 
 process("402")

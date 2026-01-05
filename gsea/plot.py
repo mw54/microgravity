@@ -23,8 +23,11 @@ def plot_dotplot(title, data, path):
         sizes=(0, 100),
     )
 
+    # customize legend labels
     legend = ax.get_legend()
-    legend.texts[6].set_text(r"$-\log_{10}$(p-adj)")
+    for text in legend.texts:
+        if text.get_text() == "nlog10padj":
+            text.set_text(r"$-\log_{10}$(p-adj)")
     sns.move_legend(ax, "center left", bbox_to_anchor=(1.02, 0.5))
     
     plt.title(title)
