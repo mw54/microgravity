@@ -81,9 +81,25 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 
 ## Requirements
 
-- Cell Ranger
-- Python packages: scanpy, anndata, pandas, numpy, matplotlib, seaborn, gseapy, tqdm
-- R packages: bnlearn, arrow, parallel
+- Cell Ranger (v9.0.1)
+- Conda
+
+### Environment Setup
+
+This pipeline requires two separate conda environments due to package compatibility issues:
+
+1. **Main environment** (Python 3.13.5) - for most analyses
+2. **GSEA environment** (Python 3.12.11) - for gene set enrichment analysis
+
+Create the environments:
+
+```bash
+# Main environment (cellranger, qc, contamination, annotation, deg, causal)
+conda env create -f setup/main.yaml
+
+# GSEA environment (gsea only)
+conda env create -f setup/gsea.yaml
+```
 
 ## Usage
 
@@ -94,3 +110,7 @@ bash autopilot.sh
 ```
 
 The pipeline will sequentially process all datasets through alignment, QC, annotation, differential expression, enrichment analysis, and causal inference.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

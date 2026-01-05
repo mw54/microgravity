@@ -1,0 +1,21 @@
+name: main
+channels:
+  - conda-forge
+  - bioconda
+  - r
+dependencies:
+  - python=3.13.5
+  - scanpy=1.11.4
+  - anndata
+  - pandas=2.3.1
+  - pyarrow=21.0.0
+  - numpy
+  - matplotlib
+  - seaborn
+  - tqdm
+  - adjusttext
+  - matplotlib-venn
+  - r-base=4.4.0
+  - r-bnlearn=4.9.0
+  - r-arrow=21.0.0
+  
