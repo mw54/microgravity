@@ -1,0 +1,22 @@
+name: comparison
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Python dependencies (from your scpy312)
+  - python=3.12
+  - scanpy
+  - anndata
+  - pandas
+  - mygene
+  - h5py
+  - scikit-image
+  - python-igraph
+  - leidenalg
+  - scikit-misc
+  # R dependencies (Core + Key Packages)
+  - r-base=4.4.0
+  - r-dplyr=1.1.4
+  - r-pheatmap=1.0.12
+  - r-tibble=3.2.1

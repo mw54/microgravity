@@ -44,4 +44,12 @@ cd ../causal
 python discretize.py # discretize gene expression data
 Rscript causal.r # perform causal structure learning
 
+# human-mouse comparison analysis
+conda activate comparison # Comparison analysis requires specific Python and R dependencies
+cd ../comparison
+python convert_orthologs.py # map mouse genes to human orthologs
+Rscript fisher_test.R # perform Fisher's exact test
+Rscript overlap_heatmap.R # plot concordant genes heatmap
+conda deactivate
+
 conda deactivate
