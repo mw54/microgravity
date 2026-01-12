@@ -24,8 +24,11 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 │   ├── qc.py
 │   └── constants.py
 ├── contamination/               # Contamination assessment
+│   ├── data
+│   │   └── cellxgene.csv
 │   ├── contamination.py
 │   ├── plot.py
+│   ├── cellxgene.py
 │   └── constants.py
 ├── annotation/                  # Cell type annotation
 │   ├── signatures.py
@@ -63,6 +66,7 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 ### Contamination Analysis
 - **contamination.py**: Assesses hemoglobin and calprotectin contamination levels across droplet types
 - **plot.py**: Visualizes contamination markers before and after filtering
+- **cellxgene.py**: Visualizes expression levels of relevant genes from CELLxGENE reference atlas
  
 ### Cell Type Annotation
 - **signatures.py**: Extracts cluster-specific gene signatures from quality-controlled data

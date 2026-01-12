@@ -19,6 +19,7 @@ python qc.py
 cd ../contamination
 python contamination.py # obtain hemoglobin and calprotectin expression levels
 python plot.py # calculate metrics and plot expression levels
+python cellxgene.py # visualize expression levels from reference atlas
 
 # cell type annotation
 cd ../annotation
