@@ -1,4 +1,4 @@
-# Post-flight recovery reveals enduring spaceflight reprogramming of the murine immune system
+# Post-spaceflight analysis reveals enduring reprogramming of the murine immune system by microgravity
  
 This repository contains analysis scripts for investigating spaceflight effects on immune cells using single-cell RNA sequencing data from NASA's RRRM-2 mission.
  
