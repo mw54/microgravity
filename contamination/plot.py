@@ -21,9 +21,10 @@ def dotplot_droplet(title, data, path):
         figsize=(5, 5),
         dpi=300
     )
-    fig.subplots_adjust(wspace=0.0)
+    fig.subplots_adjust(wspace=0.1)
     for i, droplet in enumerate(droplets):
-        subset = data[data["droplet"] == droplet]
+        subset = data[data["droplet"] == droplet].copy()
+        subset["mean"] = subset["mean"].clip(0, 8)
         ax = axes[i]
         sns.scatterplot(
             data=subset,
@@ -31,7 +32,7 @@ def dotplot_droplet(title, data, path):
             y='sample',
             hue='mean',
             palette='Blues',
-            hue_norm=(0, 6),
+            hue_norm=(0, 8),
             size_norm=(0, 1),
             size='pct',
             sizes=(0, 100),
@@ -50,7 +51,6 @@ def dotplot_droplet(title, data, path):
 
     fig.suptitle(title)
     plt.tight_layout()
-    fig.subplots_adjust(wspace=0.1)
     plt.savefig(path)
     plt.close()
 
@@ -66,7 +66,8 @@ def dotplot_sample(title, data, path):
         dpi=300
     )
     for i, sample in enumerate(samples):
-        subset = data[data["sample"] == sample]
+        subset = data[data["sample"] == sample].copy()
+        subset["mean"] = subset["mean"].clip(0, 8)
         ax = axes[i]
         sns.scatterplot(
             data=subset,
@@ -74,7 +75,7 @@ def dotplot_sample(title, data, path):
             y='clustertype',
             hue='mean',
             palette='Blues',
-            hue_norm=(0, 6),
+            hue_norm=(0, 8),
             size_norm=(0, 1),
             size='pct',
             sizes=(0, 100),

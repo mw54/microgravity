@@ -90,6 +90,38 @@ def plot_dotplot(title, data, path):
     plt.savefig(path)
     plt.close()
 
+def dotplot_legend(title, data, path):
+    # plot legend doner panel
+    plt.figure(figsize=(10, 6), dpi=300)
+    subset = data.loc[data['Term'].isin([vv for v in terms.values() for vv in v])].copy()
+    term_cate = pd.CategoricalDtype(categories=sorted(subset["Term"].unique()), ordered=True)
+    cell_cate = pd.CategoricalDtype(categories=sorted(subset["Celltype"].unique()), ordered=True)
+    subset["Term"] = subset["Term"].astype(term_cate)
+    subset["Celltype"] = subset["Celltype"].astype(cell_cate)
+    ax = sns.scatterplot(
+        data=subset,
+        x='Celltype',
+        y='Term',
+        hue='NES',
+        palette='RdBu_r',
+        hue_norm=(-3.5, 3.5),
+        size_norm=(0, 5),
+        size='nlog10padj',
+        sizes=(0, 100),
+        legend=True
+    )
+    ax.set_ylim(-0.5, len([vv for v in terms.values() for vv in v]) - 0.5)
+    ax.tick_params(axis='x',  rotation=90)
+    sns.move_legend(ax, "center left", bbox_to_anchor=(1.02, 0.5))
+    legend = ax.get_legend()
+    for text in legend.texts:
+        if text.get_text() == "nlog10padj":
+            text.set_text(r"$-\log_{10}$(p-adj)")
+    
+    plt.title(title)
+    plt.tight_layout()
+    plt.savefig(path)
+    plt.close()
 
 def plot(names, source_paths):
     dfs = list()
@@ -103,5 +135,6 @@ def plot(names, source_paths):
     dfs = dfs.loc[dfs["Term"].isin([t for aspect in terms.values() for t in aspect])]
     for age in dfs[ "Age"].unique():
         plot_dotplot(age.capitalize(), dfs.loc[dfs["Age"] == age], f"figures/summary_{age}.png")
+        dotplot_legend(f"{age.capitalize()} Legend", dfs.loc[dfs["Age"] == age], f"figures/summary_{age}_legend.png")
 
 plot(["402", "403", "404", "405"], ["data/gsea_402.csv", "data/gsea_403.csv", "data/gsea_404.csv", "data/gsea_405.csv"])

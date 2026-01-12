@@ -22,6 +22,7 @@ def plot_volcano(title, data, path, top_labels=10):
         alpha=0.6, s=20,
         hue_order=['up', 'down', 'ns']
     )
+    plt.xlim(-7.5, 7.5)
     plt.title(title)
     plt.xlabel(r'$\log_2$(Fold Change) uG/1G')
     plt.ylabel(r'$-\log_{10}$(Adjusted p-Value)')
