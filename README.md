@@ -37,6 +37,10 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 │   └── constants.py
 ├── deg/                         # Differential expression analysis
 │   ├── deg.py
+│   ├── summary.py
+│   └── plot.py
+├── ageing/                      # Accelerated ageing analysis
+│   ├── ageing.py
 │   └── plot.py
 ├── gsea/                        # Gene set enrichment analysis
 │   ├── gsea.py
@@ -76,6 +80,11 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 ### Differential Expression Analysis
 - **deg.py**: Identifies differentially expressed genes between microgravity and ground control conditions for each cell type and age group
 - **plot.py**: Creates volcano plots and dotplots summarizing top DEGs
+- **summary.py**: Creates a dotplot for selected genes across cell types, age groups and organs
+
+### Accelerated Ageing Analysis
+- **ageing.py**: Identifies ageing signatures from differentially expressed genes between old and young cohorts in ground control conditions irregardless of cell types
+- **plot.py**: Creates volcano plots and scatter plots summarizing ageing signature genes and microgravity-ageing signature correlations
  
 ### Gene Set Enrichment Analysis
 - **gsea.py**: Performs GSEA using MSigDB canonical pathways to identify enriched biological processes
@@ -106,7 +115,7 @@ This pipeline requires three separate conda environments due to package compatib
  
 Create the environments:
 ```bash
-# Main environment (cellranger, qc, contamination, annotation, deg, causal)
+# Main environment (cellranger, qc, contamination, annotation, deg, ageing, causal)
 conda env create -f setup/main.yaml
  
 # GSEA environment (gsea only)

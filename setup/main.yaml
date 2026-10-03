@@ -15,7 +15,8 @@ dependencies:
   - tqdm
   - adjusttext
   - matplotlib-venn
-  - r-base=4.4.0
+  - r-base<=4.4.0
   - r-bnlearn=4.9.0
   - r-arrow=21.0.0
+  - r-tidyverse=2.0.0
   

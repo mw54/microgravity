@@ -29,8 +29,14 @@ python plot.py # plot cell type annotation results
 
 # differential expression analysis
 cd ../deg
-python deg.py # perform differential expression analysis
+python deg.py # perform differential expression analysis by gravity
 python plot.py # plot differential expression results
+python summary.py # plot differential expression profiles for selected genes
+
+# accelerated ageing test
+cd ../ageing
+python ageing.py # perform differential expression analysis by age
+python plot.py # plot ageing signatures and correlations
 
 # gene set enrichment analysis
 conda activate gsea # GSEA requires a different environment due to conflicts with scanpy and python 3.13
