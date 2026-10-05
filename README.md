@@ -52,7 +52,9 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 └── comparison/                  # Cross-species comparison
     ├── convert_orthologs.py
     ├── fisher_test.R
-    └── overlap_heatmap.R
+    ├── overlap_heatmap.R
+    ├── i4_fisher_test.R
+    └── i4_overlap_heatmap.R
 ```
  
 ## Script Overview
@@ -99,6 +101,8 @@ The datasets were obtained from NASA Space Biology Open Science Data Repository 
 - **convert_orthologs.py**: Maps mouse genes to human orthologs using MyGene.info
 - **fisher_test.R**: Performs Fisher's exact test to assess statistical enrichment of orthologous genes between human and mouse datasets
 - **overlap_heatmap.R**: Visualizes concordant gene expression changes between human and mouse using heatmaps
+- **i4_fisher_test.R**: Fisher's exact test of overlap between mouse PBMC DEGs (OSD-404) and human PBMC DEGs from the Inspiration4 (I4) crew (immediate post-flight R+1 vs pre-flight; Kim et al., *Nat Commun* 2024, Supplementary Data 15). The I4 DEG set comprises genes with adjusted p-value < 0.05 and |log2FC| > 0.1 in all nine annotated PBMC cell types
+- **i4_overlap_heatmap.R**: Heatmaps of overlapping genes with concordant direction between I4 and mouse PBMC DEGs (I4 log2FC averaged across the nine cell types)
  
 ## Requirements
  

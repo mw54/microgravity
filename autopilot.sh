@@ -57,6 +57,8 @@ cd ../comparison
 python convert_orthologs.py # map mouse genes to human orthologs
 Rscript fisher_test.R # perform Fisher's exact test
 Rscript overlap_heatmap.R # plot concordant genes heatmap
+Rscript i4_fisher_test.R # Fisher's exact test against Inspiration4 PBMC DEGs
+Rscript i4_overlap_heatmap.R # plot concordant genes heatmap (Inspiration4 vs mouse PBMC)
 conda deactivate
 
 conda deactivate
