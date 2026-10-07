@@ -4,31 +4,44 @@ library(parallel)
 
 num_boots <- 100
 num_cores <- 24
-subsample_proportion <- 0.75
+subsample <- 0.75
+threshold <- 0.05
+
+entropy <- function(x) {
+    p <- table(x) / length(x)
+    p <- p[p > 0]
+    return(-sum(p * log2(p)))
+}
+
+test <- function(center, set, data) {
+    sapply(set, function(g) {
+        tt <- ci.test(x = center, y = g, z = setdiff(set, g), data = data, test = "mi")
+        mi = unname(tt$statistic / (2 * n))
+        nmi = mi / (entropy(data[[center]]) * entropy(data[[g]]))^0.5
+        return(c(statistic = unname(tt$statistic), df = unname(tt$parameter[1]), mi = mi, nmi = nmi, pval = tt$p.value))
+    })
+}
 
 process <- function(name, source_path) {
-    set.seed(42)
+    set.seed(0)
 
     data <- read_feather(source_path)
     data <- as.data.frame(lapply(data, factor))
+    n <- nrow(data)
 
-    bootstrap <- mclapply(1:num_boots, function(i) {
-        message("Bootstrapping ", i, "/", num_boots)
-        subset <- data[sample(nrow(data), size = subsample_proportion * nrow(data)), ]
-        boot <- learn.mb(x = subset, node = "gravity", method = "iamb.fdr", test = "mi")
-        return(boot)
-    }, mc.cores = num_cores)
+    indices <- lapply(seq_len(num_boots), function(i) sample.int(n, round(subsample * n)))
+    boots <- mclapply(
+        indices,
+        function(index) {learn.mb(x = data[index, , drop = FALSE], node = "gravity", method = "iamb.fdr", test = "mi")},
+        mc.cores = num_cores
+    )
+    candidates <- unique(unlist(boots))
+    stabilities <- sapply(candidates, function(g) mean(vapply(boots, function(b) g %in% b, logical(1))))
+    consensus <- names(stabilities)[stabilities >= threshold]
 
-    mb <- unique(unlist(bootstrap))
-
-    message("Calculating statistics")
-    results <- sapply(mb, function(g) {
-        test <- ci.test(x = "gravity", y = g, z = setdiff(mb, g), data = data, test = "mi")
-        stability <- sum(sapply(bootstrap, function(x) g %in% x)) / length(bootstrap)
-        return(c(mi = test$statistic[["mi"]], pval = test$p.value, stability = stability))
-    })
-
-    write.csv(t(results), paste("data/", name, ".csv", sep=""))
+    results <- data.frame(gene = consensus, stability = stabilities[consensus], t(test("gravity", consensus, data)))
+    write.csv(results, paste("data/blanket_", name, ".csv", sep=""), row.names=FALSE)
+    saveRDS(list(indices = indices, boots = boots), paste("data/boots_", name, ".rds", sep=""))
 }
 
 process("402", "data/discretized_402.feather")
