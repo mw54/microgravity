@@ -5,18 +5,18 @@ library(parallel)
 num_boots <- 100
 num_cores <- 24
 subsample <- 0.75
-threshold <- 0.05
+threshold <- 0.5
 
 entropy <- function(x) {
     p <- table(x) / length(x)
     p <- p[p > 0]
-    return(-sum(p * log2(p)))
+    return(-sum(p * log(p)))
 }
 
 test <- function(center, set, data) {
     sapply(set, function(g) {
         tt <- ci.test(x = center, y = g, z = setdiff(set, g), data = data, test = "mi")
-        mi = unname(tt$statistic / (2 * n))
+        mi = unname(tt$statistic / (2 * nrow(data)))
         nmi = mi / (entropy(data[[center]]) * entropy(data[[g]]))^0.5
         return(c(statistic = unname(tt$statistic), df = unname(tt$parameter[1]), mi = mi, nmi = nmi, pval = tt$p.value))
     })
@@ -27,14 +27,14 @@ process <- function(name, source_path) {
 
     data <- read_feather(source_path)
     data <- as.data.frame(lapply(data, factor))
-    n <- nrow(data)
 
-    indices <- lapply(seq_len(num_boots), function(i) sample.int(n, round(subsample * n)))
+    indices <- lapply(seq_len(num_boots), function(i) sample.int(nrow(data), round(subsample * nrow(data))))
     boots <- mclapply(
         indices,
-        function(index) {learn.mb(x = data[index, , drop = FALSE], node = "gravity", method = "iamb.fdr", test = "mi")},
+        function(index) {message(1); learn.mb(x = data[index, , drop = FALSE], node = "gravity", method = "iamb.fdr", test = "mi")},
         mc.cores = num_cores
     )
+
     candidates <- unique(unlist(boots))
     stabilities <- sapply(candidates, function(g) mean(vapply(boots, function(b) g %in% b, logical(1))))
     consensus <- names(stabilities)[stabilities >= threshold]
