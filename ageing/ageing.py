@@ -27,8 +27,8 @@ def process(name, source_path):
         "scores": intrinsic["scores"],
         "pvals_adj": intrinsic["pvals_adj"],
         "intrinsic": intrinsic["logfoldchanges"],
-        "old": degs[:,celltypes["Overall"],ages["old"],metrics["scores"]],
-        "young": degs[:,celltypes["Overall"],ages["young"],metrics["scores"]],
+        "old": degs[:,celltypes["Overall"],ages["old"],metrics["logfoldchanges"]],
+        "young": degs[:,celltypes["Overall"],ages["young"],metrics["logfoldchanges"]],
     }, index=intrinsic.index)
 
     # save data
