@@ -27,8 +27,9 @@ def plot_scatter(title, data, var, path):
 
     plt.title(title)
     plt.xlim(-6, 6)
+    plt.ylim(-6, 6)
     plt.xlabel(r'$\log_2$(Fold Change) Old/Young')
-    plt.ylabel(r'$-\log_2$(Fold Change) uG/1G')
+    plt.ylabel(r'$\log_2$(Fold Change) uG/1G')
     plt.tight_layout()
     plt.savefig(path)
     plt.close()
