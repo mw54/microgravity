@@ -16,7 +16,7 @@ def plot_dotplot(data, path):
     fig, axes = plt.subplots(
         ncols=5,
         nrows=3,
-        figsize=(16, 4),
+        figsize=(20, 4),
         dpi=300,
         gridspec_kw={'height_ratios': [1, 6, 6], 'width_ratios': [6, 6, 6, 6, 1]}
     )
@@ -83,39 +83,6 @@ def plot_dotplot(data, path):
     plt.savefig(path)
     plt.close()
 
-def dotplot_legend(data, path):
-    # plot legend doner panel
-    plt.figure(figsize=(10, 6), dpi=300)
-    subset = data.loc[data['Term'].isin([vv for v in terms.values() for vv in v])].copy()
-    term_cate = pd.CategoricalDtype(categories=sorted(subset["Term"].unique()), ordered=True)
-    cell_cate = pd.CategoricalDtype(categories=sorted(subset["Celltype"].unique()), ordered=True)
-    subset["Term"] = subset["Term"].astype(term_cate)
-    subset["Celltype"] = subset["Celltype"].astype(cell_cate)
-    ax = sns.scatterplot(
-        data=subset,
-        x='Celltype',
-        y='Term',
-        hue='NES',
-        palette='RdBu_r',
-        hue_norm=(-3.5, 3.5),
-        size_norm=(0, 5),
-        size='nlog10padj',
-        sizes=(0, 100),
-        legend=True
-    )
-    ax.set_ylim(-0.5, len([vv for v in terms.values() for vv in v]) - 0.5)
-    ax.tick_params(axis='x',  rotation=90)
-    sns.move_legend(ax, "center left", bbox_to_anchor=(1.02, 0.5))
-    legend = ax.get_legend()
-    for text in legend.texts:
-        if text.get_text() == "nlog10padj":
-            text.set_text(r"$-\log_{10}$(p-adj)")
-    
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(path)
-    plt.close()
-
 def plot(names, source_paths):
     dfs = list()
     for name, path in zip(names, source_paths):
@@ -125,6 +92,5 @@ def plot(names, source_paths):
     dfs = pd.concat(dfs, axis=0, ignore_index=True)
     dfs = dfs.loc[dfs["gene"].isin(genes)]
     plot_dotplot(dfs, "figures/summary.png")
-    dotplot_legend(f"{age.capitalize()} Legend", dfs.loc[dfs["Age"] == age], f"figures/summary_{age}_legend.png")
 
 plot(["402", "403", "404", "405"], ["data/volcano_402.csv", "data/volcano_403.csv", "data/volcano_404.csv", "data/volcano_405.csv"])

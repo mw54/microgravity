@@ -31,7 +31,7 @@ process <- function(name, source_path) {
     indices <- lapply(seq_len(num_boots), function(i) sample.int(nrow(data), round(subsample * nrow(data))))
     boots <- mclapply(
         indices,
-        function(index) {message(1); learn.mb(x = data[index, , drop = FALSE], node = "gravity", method = "iamb.fdr", test = "mi")},
+        function(index) {learn.mb(x = data[index, , drop = FALSE], node = "gravity", method = "iamb.fdr", test = "mi")},
         mc.cores = num_cores
     )
 
