@@ -97,7 +97,7 @@ groups = {
     'GY10': 'GY'
 }
 
-gravity = {"FO": "uG", "FY": "uG", "GO": "1G", "GY": "1G"}
+gravity = {"FO": "ug", "FY": "ug", "GO": "1g", "GY": "1g"}
 age = {"FO": "old", "FY": "young", "GO": "old", "GY": "young"}
 
 thresholds = {

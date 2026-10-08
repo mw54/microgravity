@@ -26,7 +26,7 @@ def process(name, source_path, target_path):
                 subset = adata[(adata.obs["clustertype"] == celltype) & (adata.obs["age"] == age), :].copy()
             
             # compute DEG w.r.t. experimental conditions
-            sc.tl.rank_genes_groups(subset, groupby="gravity", reference="1G", method="wilcoxon", key_added=f"{celltype}-{age}", layer="lognorm", use_raw=False)
+            sc.tl.rank_genes_groups(subset, groupby="gravity", reference="1g", method="wilcoxon", key_added=f"{celltype}-{age}", layer="lognorm", use_raw=False)
             df = sc.get.rank_genes_groups_df(subset, group=None, key=f"{celltype}-{age}").set_index("names", drop=True)
             df = df.loc[adata.var_names.values]
 

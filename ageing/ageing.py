@@ -6,7 +6,7 @@ def process(name, source_path):
     adata = sc.read(source_path)
 
     # derive instrinsic ageing signature
-    subset = adata[(adata.obs["gravity"] == "1G"), :].copy()
+    subset = adata[(adata.obs["gravity"] == "1g"), :].copy()
     subset.obs.value_counts()
     sc.tl.rank_genes_groups(subset, groupby="age", reference="young", method="wilcoxon", key_added="ageing", layer="lognorm", use_raw=False)
     intrinsic = sc.get.rank_genes_groups_df(subset, group=None, key="ageing").set_index("names", drop=True)

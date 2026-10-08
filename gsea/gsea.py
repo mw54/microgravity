@@ -21,8 +21,8 @@ def process(name, source_path):
             else:
                 subset = adata[(adata.obs["clustertype"] == celltype) & (adata.obs["age"] == age), :].copy()
 
-            # ensure the reference is 1G
-            subset.obs['gravity'] = pd.Categorical(subset.obs['gravity'], categories=["uG", "1G"], ordered=True)
+            # ensure the reference is 1g
+            subset.obs['gravity'] = pd.Categorical(subset.obs['gravity'], categories=["ug", "1g"], ordered=True)
 
             # compute GSEA
             results = gp.gsea(data=subset.to_df("lognorm").transpose(), # row -> genes, column-> samples

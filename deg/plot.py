@@ -24,7 +24,7 @@ def plot_volcano(title, data, path, top_labels=10):
     )
     plt.xlim(-7.5, 7.5)
     plt.title(title)
-    plt.xlabel(r'$\log_2$(Fold Change) uG/1G')
+    plt.xlabel(r'$\log_2$(Fold Change) μ$g$/1$g$')
     plt.ylabel(r'$-\log_{10}$(Adjusted p-Value)')
 
     # add text label for top significant DEGs
@@ -62,7 +62,7 @@ def plot_dotplot(title, data, path):
     legend = ax.get_legend()
     for text in legend.texts:
         if text.get_text() == "logfoldchanges":
-            text.set_text(r"$\log_2$(FC) uG/1G")
+            text.set_text(r"$\log_2$(FC) μ$g$/1$g$")
         if text.get_text() == "nlog10padj":
             text.set_text(r"$-\log_{10}$(p-adj)")
     
@@ -125,8 +125,5 @@ def plot(name, source_path):
 
 plot("402", "../data/402-2.h5ad")
 plot("403", "../data/403-2.h5ad")
-plot("404", "../data/404-2.h5ad")
-plot("405", "../data/405-2.h5ad")
-
-
-    
+plot("404", "/groups/xlu/zgu4/osd404/data/404-2.h5ad")
+plot("405", "/groups/xlu/zgu4/osd405/data/405-2.h5ad")
